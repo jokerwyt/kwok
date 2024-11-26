@@ -101,7 +101,10 @@ func NewCommand(ctx context.Context) *cobra.Command {
 	cmd.Flags().StringSliceVar(&flags.Options.EnableCRDs, "enable-crds", flags.Options.EnableCRDs, "List of CRDs to enable")
 	cmd.Flags().StringVar(&flags.Tracing.Endpoint, "tracing-endpoint", flags.Tracing.Endpoint, "Tracing endpoint")
 	cmd.Flags().Int32Var(&flags.Tracing.SamplingRatePerMillion, "tracing-sampling-rate-per-million", flags.Tracing.SamplingRatePerMillion, "Tracing sampling rate per million")
-	cmd.Flags().UintVar(&flags.Options.PodPlayStageParallelism, "pod-play-stage-parallelism", 4, "Number of pod play stage parallelism")
+	cmd.Flags().UintVar(&flags.Options.PodPlayStageParallelism, "pod-play-stage-parallelism", flags.Options.PodPlayStageParallelism, "Number of pod play stage parallelism")
+	cmd.Flags().BoolVar(&flags.Options.EnableDebuggingHandlers, "enable-debugging-handlers", flags.Options.EnableDebuggingHandlers, "Enable debugging handlers")
+	cmd.Flags().BoolVar(&flags.Options.EnableProfilingHandler, "enable-profiling-handler", flags.Options.EnableProfilingHandler, "Enable profiling handler")
+	cmd.Flags().BoolVar(&flags.Options.EnableContentionProfiling, "enable-contention-profiling", flags.Options.EnableContentionProfiling, "Enable contention profiling")
 
 	cmd.Flags().BoolVar(&flags.Options.EnableCNI, "experimental-enable-cni", flags.Options.EnableCNI, "Experimental support for getting pod ip from CNI, for CNI-related components, Only works with Linux")
 	_ = cmd.Flags().MarkDeprecated("experimental-enable-cni", "It will be removed and will be supported in the form of plugins")
@@ -125,6 +128,8 @@ var crdDefines = map[string]struct{}{
 
 func runE(ctx context.Context, flags *flagpole) error {
 	logger := log.FromContext(ctx)
+
+	logger.Info("Received KwokConfiguration.Options", "values", flags.KwokConfiguration.Options)
 
 	id, err := controllers.Identity()
 	if err != nil {

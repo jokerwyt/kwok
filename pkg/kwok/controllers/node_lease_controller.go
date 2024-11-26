@@ -185,7 +185,7 @@ func (c *NodeLeaseController) sync(ctx context.Context, nodeName string, first b
 			logger.Debug("Lease already acquired by another holder")
 			return nil, nil
 		}
-		logger.Info("Syncing lease")
+		// logger.Info("Syncing lease")
 		lease, transitions, err := c.renewLease(ctx, lease)
 		if err != nil {
 			return nil, fmt.Errorf("failed to update lease using lease: %w", err)

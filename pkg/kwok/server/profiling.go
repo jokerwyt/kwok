@@ -31,6 +31,11 @@ func (s *Server) InstallProfilingHandler(enableProfilingLogHandler bool, enableC
 
 	// Setup pprof handlers.
 	s.restfulCont.Handle(pprofBasePath, http.HandlerFunc(pprof.Index))
+	s.restfulCont.Handle(pprofBasePath+"cmdline", http.HandlerFunc(pprof.Cmdline))
+	s.restfulCont.Handle(pprofBasePath+"profile", http.HandlerFunc(pprof.Profile))
+	s.restfulCont.Handle(pprofBasePath+"symbol", http.HandlerFunc(pprof.Symbol))
+	s.restfulCont.Handle(pprofBasePath+"trace", http.HandlerFunc(pprof.Trace))
+
 	if enableContentionProfiling {
 		runtime.SetBlockProfileRate(1)
 	}

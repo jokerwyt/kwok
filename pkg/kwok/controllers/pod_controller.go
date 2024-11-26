@@ -31,6 +31,7 @@ import (
 
 	"sigs.k8s.io/kwok/pkg/config/resources"
 	"sigs.k8s.io/kwok/pkg/kwok/cni"
+	"sigs.k8s.io/kwok/pkg/kwok/metrics"
 	"sigs.k8s.io/kwok/pkg/log"
 	"sigs.k8s.io/kwok/pkg/utils/expression"
 	"sigs.k8s.io/kwok/pkg/utils/gotpl"
@@ -194,6 +195,7 @@ func (c *PodController) preprocessWorker(ctx context.Context) {
 
 // preprocess the pod and send it to the playStageWorker
 func (c *PodController) preprocess(ctx context.Context, pod *corev1.Pod) error {
+	metrics.PodPreprocessed.Inc()
 	key := log.KObj(pod).String()
 
 	logger := log.FromContext(ctx)
@@ -288,6 +290,8 @@ func (c *PodController) playStageWorker(ctx context.Context) {
 // playStage plays the stage.
 // The returned boolean indicates whether the applying action needs to be retried.
 func (c *PodController) playStage(ctx context.Context, pod *corev1.Pod, stage *lifecycle.Stage) (bool, error) {
+	metrics.PodStagedPlayed.Inc()
+
 	next := stage.Next()
 	logger := log.FromContext(ctx)
 	logger = logger.With(
